@@ -6,10 +6,27 @@ function hash(key) {
   }
   return hashCode;
 }
-const hashMap = () => {
-  let hashArr = [];
+const hashMap = (currentArrSize=16,loadFactor=.75) => {
   let currentLength = 0;
-  let arrSize = 16;
+  let arrSize = currentArrSize;
+  let hashArr = new Array(arrSize);
+
+  function calculateLoadFactor(){
+    return currentLength / arrSize;
+  }
+
+  function resize(){
+    const OldArr=hashArr;
+    arrSize*=2;
+    hashArr=new Array(arrSize)
+    OldArr.forEach(bucket=>{
+      if(bucket&&bucket.length>0){
+        bucket.forEach((item)=>{
+        set(Object.keys(item),Object.values(item))  
+        })
+      }
+    })
+  }
 
   const set = (key, value) => {
     let hashVal = hash(key);
@@ -19,7 +36,9 @@ const hashMap = () => {
     }
     hashArr[hashVal][key] = value;
     currentLength++;
-    return;
+    if (calculateLoadFactor()>loadFactor){
+      resize()
+      }
   };
   const get = (key) => {
     let hashVal = hash(key);
@@ -87,12 +106,14 @@ const hashMap = () => {
 
 let newHash = hashMap();
 newHash.set("Mahmoud", "Barghout");
+newHash.set("John","cena")
+newHash.set("welcome","to the jungle")
 newHash.set("soso", "leeh");
 console.log(newHash.get("soso"));
 newHash.set("soso", "booso");
 console.log(newHash.get("soso"));
-//console.log(newHash.remove("soso"));
-console.log(newHash.get("soso"));
+// //console.log(newHash.remove("soso"));
+// console.log(newHash.get("soso"));
 
 console.log(newHash.has("Mahmoud"));
 console.log(newHash.length());
